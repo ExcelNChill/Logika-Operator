@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Logika Excel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F7F7F7;
+        }
+        .editable-cell {
+            background-color: #fffbeb;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            border: 1px solid transparent;
+        }
+        .editable-cell:focus {
+            outline: none;
+            border-color: #00A6ED;
+            box-shadow: 0 0 0 2px rgba(0, 166, 237, 0.2);
+            background-color: #ffffff;
+        }
+        .apply-btn {
+            display: block;
+            width: 100%;
+            margin-top: 0.75rem;
+            padding: 0.5rem;
+            background-color: #00A6ED;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .apply-btn:hover {
+            background-color: #008ac4;
+        }
+        .logic-btn {
+            padding: 0.25rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            background-color: white;
+            margin: 0 0.25rem;
+            transition: all 0.2s;
+        }
+        .logic-btn:hover {
+            background-color: #f3f4f6;
+        }
+        .logic-btn.selected {
+            background-color: #00A6ED;
+            color: white;
+            border-color: #00A6ED;
+        }
+        .logic-exercise-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 9999px;
+            cursor: pointer;
+            background-color: white;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #4b5563;
+            transition: all 0.2s;
+        }
+        .logic-exercise-btn:hover {
+            background-color: #f3f4f6;
+        }
+        .logic-exercise-btn.selected {
+            background-color: #00A6ED;
+            color: white;
+            border-color: #00A6ED;
+        }
+        .excel-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .excel-table th, .excel-table td {
+            border: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body class="text-gray-800 py-10">
+
+    <div class="container mx-auto max-w-3xl p-4 sm:p-6 md:p-8">
+        <section class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-3xl font-bold text-center mb-6 text-[#00A6ED]">Asah Logikamu: Benar atau Salah?</h2>
+            <p class="text-center max-w-2xl mx-auto mb-6 text-gray-600">Pilih latihan di bawah, lalu tentukan apakah setiap angka menghasilkan jawaban "Benar" atau "Salah" sesuai instruksi.</p>
+            
+            <div id="logic-exercise-selector" class="flex justify-center flex-wrap gap-2 mb-6">
+                <button class="logic-exercise-btn" data-exercise-index="0">Kurang Dari (<)</button>
+                <button class="logic-exercise-btn" data-exercise-index="1">Lebih Dari (>)</button>
+                <button class="logic-exercise-btn" data-exercise-index="2">Kurang Dari Sama Dengan (<=)</button>
+                <button class="logic-exercise-btn" data-exercise-index="3">Lebih Dari Sama Dengan (>=)</button>
+                <button class="logic-exercise-btn" data-exercise-index="4">Sama Dengan (=)</button>
+                <button class="logic-exercise-btn" data-exercise-index="5">Tidak Sama Dengan (<>)</button>
+            </div>
+
+            <div id="logic-instruction-container" class="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 p-4 rounded-md max-w-2xl mx-auto mb-6 shadow-sm" role="alert">
+                <p class="font-bold mb-1">Instruksi:</p>
+                <p class="text-lg">Apakah setiap angka di bawah ini <span id="logic-instruction-text" class="font-bold text-blue-600"></span> <span id="logic-instruction-value" class="editable-cell inline-block min-w-[2rem] text-center" contenteditable="true">50</span>?</p>
+            </div>
+
+            <div class="max-w-md mx-auto">
+                <table class="excel-table" id="tabel-latihan-logika">
+                    <thead class="bg-gray-50 text-gray-700">
+                        <tr>
+                            <th class="p-3 text-center">Angka</th>
+                            <th class="p-3 text-center">Jawabanmu</th>
+                            <th class="p-3 text-center w-20">Koreksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="p-3 text-center">
+                                <span class="font-bold text-xl editable-cell inline-block w-full" contenteditable="true">65</span>
+                            </td>
+                            <td class="p-3 text-center">
+                                <button class="logic-btn" data-answer="true">Benar</button>
+                                <button class="logic-btn" data-answer="false">Salah</button>
+                            </td>
+                            <td class="p-3 text-center feedback-cell font-bold text-xl"></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="p-3 text-center">
+                                <span class="font-bold text-xl editable-cell inline-block w-full" contenteditable="true">25</span>
+                            </td>
+                            <td class="p-3 text-center">
+                                <button class="logic-btn" data-answer="true">Benar</button>
+                                <button class="logic-btn" data-answer="false">Salah</button>
+                            </td>
+                            <td class="p-3 text-center feedback-cell font-bold text-xl"></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="p-3 text-center">
+                                <span class="font-bold text-xl editable-cell inline-block w-full" contenteditable="true">50</span>
+                            </td>
+                            <td class="p-3 text-center">
+                                <button class="logic-btn" data-answer="true">Benar</button>
+                                <button class="logic-btn" data-answer="false">Salah</button>
+                            </td>
+                            <td class="p-3 text-center feedback-cell font-bold text-xl"></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="p-3 text-center">
+                                <span class="font-bold text-xl editable-cell inline-block w-full" contenteditable="true">12</span>
+                            </td>
+                            <td class="p-3 text-center">
+                                <button class="logic-btn" data-answer="true">Benar</button>
+                                <button class="logic-btn" data-answer="false">Salah</button>
+                            </td>
+                            <td class="p-3 text-center feedback-cell font-bold text-xl"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button id="apply-latihan-logika" class="apply-btn mt-6 py-3 text-lg shadow-sm hover:shadow-md">Cek Jawaban</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Data Logika
+            const logicExercises = [
+                { text: 'kurang dari', condition: (val, comp) => val < comp },
+                { text: 'lebih dari', condition: (val, comp) => val > comp },
+                { text: 'kurang dari atau sama dengan', condition: (val, comp) => val <= comp },
+                { text: 'lebih dari atau sama dengan', condition: (val, comp) => val >= comp },
+                { text: 'sama dengan', condition: (val, comp) => val == comp },
+                { text: 'tidak sama dengan', condition: (val, comp) => val != comp }
+            ];
+
+            let currentExerciseIndex = 0;
+            const logicTable = document.getElementById('tabel-latihan-logika');
+            const instructionText = document.getElementById('logic-instruction-text');
+            const instructionValue = document.getElementById('logic-instruction-value');
+            const exerciseButtons = document.querySelectorAll('.logic-exercise-btn');
+
+            // Fungsi Inisialisasi Tampilan Latihan
+            function setupExercise(index) {
+                currentExerciseIndex = index;
+                instructionText.innerHTML = logicExercises[index].text;
+                
+                // Update tampilan tombol kategori
+                exerciseButtons.forEach((btn, i) => {
+                    btn.classList.toggle('selected', i === index);
+                });
+
+                // Reset state di tabel
+                logicTable.querySelectorAll('tbody tr').forEach(row => {
+                    row.querySelector('.feedback-cell').textContent = '';
+                    const answerCell = row.cells[1];
+                    answerCell.dataset.userChoice = '';
+                    answerCell.querySelectorAll('.logic-btn').forEach(btn => btn.classList.remove('selected'));
+                });
+            }
+            
+            function clearLogicExerciseFeedback() {
+                 logicTable.querySelectorAll('tbody tr').forEach(row => {
+                    row.querySelector('.feedback-cell').textContent = '';
+                });
+            }
+
+            // Event Listeners untuk Kategori Latihan
+            exerciseButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    setupExercise(parseInt(btn.dataset.exerciseIndex));
+                });
+            });
+
+            // Event Listeners untuk Tombol Benar/Salah
+            logicTable.querySelectorAll('.logic-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const parent = btn.parentElement;
+                    // Hapus pilihan sebelumnya
+                    parent.querySelectorAll('.logic-btn').forEach(b => b.classList.remove('selected'));
+                    // Tambahkan highlight ke pilihan baru
+                    btn.classList.add('selected');
+                    // Simpan data jawaban
+                    parent.dataset.userChoice = btn.dataset.answer;
+                });
+            });
+
+            // Aksi Pengecekan
+            document.getElementById('apply-latihan-logika').addEventListener('click', () => {
+                const rows = logicTable.querySelectorAll('tbody tr');
+                const currentCondition = logicExercises[currentExerciseIndex].condition;
+                const comparisonValue = parseInt(instructionValue.innerText) || 0;
+
+                rows.forEach(row => {
+                    // Ekstrak nilai angka (cari span.editable-cell di dalam td pertama)
+                    const numberCell = row.cells[0].querySelector('.editable-cell');
+                    const number = parseInt(numberCell.innerText) || 0;
+                    
+                    const userChoice = row.cells[1].dataset.userChoice;
+                    const feedbackCell = row.querySelector('.feedback-cell');
+                    
+                    const correctAnswer = currentCondition(number, comparisonValue).toString();
+
+                    if (userChoice === undefined || userChoice === '') {
+                        feedbackCell.textContent = '';
+                        return;
+                    }
+
+                    if (userChoice === correctAnswer) {
+                        feedbackCell.textContent = '✔️';
+                        feedbackCell.style.color = '#10B981'; // Tailwind emerald-500
+                    } else {
+                        feedbackCell.textContent = '❌';
+                        feedbackCell.style.color = '#EF4444'; // Tailwind red-500
+                    }
+                });
+            });
+            
+            // Hapus feedback jika pengguna mengubah angka
+            logicTable.querySelectorAll('.editable-cell').forEach(cell => {
+                cell.addEventListener('input', (e) => {
+                    // Validasi hanya angka
+                    const text = e.target.innerText;
+                    if (/[^0-9]/.test(text)) {
+                        e.target.innerText = text.replace(/[^0-9]/g, '');
+                    }
+                    clearLogicExerciseFeedback();
+                });
+            });
+            instructionValue.addEventListener('input', clearLogicExerciseFeedback);
+
+            // Inisialisasi awal saat halaman dimuat
+            setupExercise(0);
+        });
+    </script>
+</body>
+</html>
